@@ -1,10 +1,10 @@
 
 <h1 align="left">
-  ZeroHVCI - Defeating HVCI without admin privileges or a kernel drivers
+  ZeroHVCI - Defeating HVCI without admin privileges or a kernel driver
 </h1>
 
 ZeroHVCI accomplishes arbitrary kernel read/writes/function calling in Hypervisor-Protected Code Integrity (HVCI) protected environments calling without admin permissions or kernel drivers.
-<img src="https://i.imgur.com/iLXYB7S.png" alt="tab">
+<img src="https://i.imgur.com/LE46Isc.png" alt="tab">
 <h2>Features</h2>
 <ul>
   <li>Full non-privileged kernel read/writes: Kernel read/writes are achieved by leveraging CVE-2024-26229 which requires no process elevation.</li>
