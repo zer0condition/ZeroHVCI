@@ -65,8 +65,11 @@ KF::CallKernelFunctionViaName<NTSTATUS, HANDLE, PEPROCESS*>("PsLookupProcessByPr
 <h2>How it works</h2>
 <p>Two main projects are responsible for making this possible</p>
 <ul>
-  <li> <b>CVE-2024-26229</b>- All credits to Eric Egsgard, this exploit allows us to gain kernel read/write by abusing a IOCTL with METHOD_NEITHER in csc.sys (a windows module, resources will be linked below if you want to read-up more.</li>
   <li> <b>KernelForge</b>- All credits to Dmytro Oleksiuk, his project allows us to gain HVCI-compliant kernel function calling by abusing the heirarchy of thread executions and construction rop chains without truly patching anything.</li>
+<h2> </h2>
+  <li> <b>CVE-2024-26229</b>- All credits to Eric Egsgard, this exploit allows us to gain kernel read/write by abusing a IOCTL with METHOD_NEITHER in csc.sys (a windows module, resources will be linked below if you want to read-up more.</li>
+
+  <li> <b>CVE-2024-35250</b>- All credits to Devcore team, this exploit allows us to gain kernel read/write by abusing RtlClearAllBits in ks.sys (a windows module, resources will be linked below if you want to read-up more.</li>
 </ul>
 
 
@@ -77,5 +80,5 @@ achieve arbitrary read/writes and calling kernel functions.</p>
 <h2>Acknowledgements</h2>
 
 Cr4sh for [KernelForge](https://github.com/Cr4sh/KernelForge)<br>
-varwara for his [POC](https://github.com/varwara/CVE-2024-26229)<br>
+varwara for his [POC](https://github.com/varwara/CVE-2024-26229) [POC2](https://github.com/varwara/CVE-2024-35250)<br>
 Eric Egsgard for his [talk](https://www.youtube.com/watch?v=2eHsnZ4BeDI)
